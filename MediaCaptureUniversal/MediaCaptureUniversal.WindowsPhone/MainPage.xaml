@@ -37,7 +37,7 @@
       <Button x:Name="btnTakePhoto1" Click="btnTakePhoto_Click" IsEnabled="false"  Margin="0,0,10,0">TakePhoto</Button>-->
       <Button Content="Start Preview" Command="{Binding StartPreview}"  />
       <Button Content="Stop Preview" Command="{Binding StopPreview}" />
-      <CheckBox Content="Preview" Command="{Binding ClickPreviewing}" />
+      <CheckBox Content="Preview"  IsChecked="{Binding IsPreviewing}"   Command="{Binding ClickPreview}" />
     </StackPanel>
     <CaptureElement Grid.Row="1" x:Name="PreviewElement1ACaptureElement"  Grid.Column="1"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
   </Grid>

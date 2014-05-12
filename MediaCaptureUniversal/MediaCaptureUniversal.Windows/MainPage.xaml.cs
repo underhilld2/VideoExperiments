@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 using Windows.UI.Xaml.Navigation;
-using Coachs_Eye.Model;
+using MediaCaptureUniversal.CameraLogic;
 
 
 namespace MediaCaptureUniversal

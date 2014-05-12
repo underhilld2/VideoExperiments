@@ -16,11 +16,11 @@ namespace MediaCaptureUniversal.CameraLogic
 
       StartPreview = new RelayCommand(ExecuteStartPreviewing, () => _canExecuteStartPreviewing);
       StopPreview = new RelayCommand(ExecuteStopPreviewing, () => _canExecuteStopPreviewing);
-      StartRecoding = new RelayCommand(ExecuteStartRecoding, () => _canExecuteStartRecoding);
-      StopRecoding = new RelayCommand(ExecuteStopRecoding, () => _canExecuteStopRecoding);
+      StartRecording = new RelayCommand(ExecuteStartRecoding, () => _canExecuteStartRecoding);
+      StopRecording = new RelayCommand(ExecuteStopRecoding, () => _canExecuteStopRecoding);
 
-      ClickPreviewing = new RelayCommand(ExecuteClickPreviewing, () => _canExecutePreviewing);
-      ClickRecording = new RelayCommand(ExecuteClickRecord, () => _canExecuteRecord);
+      ClickPreview = new RelayCommand(ExecuteClickPreviewing, () => _canExecutePreview);
+      ClickRecord = new RelayCommand(ExecuteClickRecord, () => _canExecuteRecord);
 
       CaptureSource.RecordLimitationExceeded += RecordLimitationExceeded;
       CaptureSource.Failed += Failed;
@@ -38,7 +38,7 @@ namespace MediaCaptureUniversal.CameraLogic
     private bool _canExecuteStartRecoding = false;
     private bool _canExecuteStopPreviewing = false;
     private bool _canExecuteStopRecoding = false;
-    private bool _canExecutePreviewing = false;
+    private bool _canExecutePreview = false;
     private bool _canExecuteRecord = false;
     private bool _isPreviewing = false;
     private bool _isRecording = false;
@@ -69,13 +69,33 @@ namespace MediaCaptureUniversal.CameraLogic
       }
     }
 
-    public RelayCommand StartRecoding { get; private set; }
-    public RelayCommand StopRecoding { get; private set; }
+    public bool IsPreviewing
+    {
+      get { return _isPreviewing; }
+      set
+      {
+        _isPreviewing = value;
+        RaisePropertyChanged(() => IsPreviewing);
+      }
+    }
+
+    public bool IsRecording
+    {
+      get { return _isRecording; }
+      set
+      {
+        _isRecording = value;
+        RaisePropertyChanged(() => IsRecording);
+      }
+    }
+
+    public RelayCommand StartRecording { get; private set; }
+    public RelayCommand StopRecording { get; private set; }
     public RelayCommand StartPreview { get; private set; }
     public RelayCommand StopPreview { get; private set; }
 
-    public RelayCommand ClickPreviewing { get; private set; }
-    public RelayCommand ClickRecording { get; private set; }
+    public RelayCommand ClickPreview { get; private set; }
+    public RelayCommand ClickRecord { get; private set; }
 
     #endregion
 
@@ -92,56 +112,42 @@ namespace MediaCaptureUniversal.CameraLogic
               CaptureSource.MediaCaptureSettings.AudioDeviceId != "")
           {
             ControllerStatus = CameraControllerStatus.Ready;
-            _canExecuteStartPreviewing = true;
-            _canExecuteStartRecoding = true;
-            StartPreview.RaiseCanExecuteChanged();
-            StartRecoding.RaiseCanExecuteChanged();
+            SetCanExecuteStartRecording(true);
+            SetCanExecuteStartPreview(true);
 
-            _canExecutePreviewing = true;
-            ClickPreviewing.RaiseCanExecuteChanged();
-            _canExecuteRecord = true;
-            ClickRecording.RaiseCanExecuteChanged();
+            SetCanExecuteClickPreview(true);
+            SetCanExecuteClickRecord(true);
           }
           else
           {
             ControllerStatus = CameraControllerStatus.FailedToInitialize;
-            _canExecuteStartPreviewing = false;
-            _canExecuteStartRecoding = false;
-            StartPreview.RaiseCanExecuteChanged();
-            StartRecoding.RaiseCanExecuteChanged();
+            SetCanExecuteStartRecording(false);
+            SetCanExecuteStartPreview(false);
 
-            _canExecutePreviewing = false;
-            ClickPreviewing.RaiseCanExecuteChanged();
-            _canExecuteRecord = false;
-            ClickRecording.RaiseCanExecuteChanged();
+            SetCanExecuteClickPreview(false);
+            SetCanExecuteClickRecord(false);
           }
         }
         else
         {
           ControllerStatus = CameraControllerStatus.Ready;
-          _canExecuteStartPreviewing = true;
-          _canExecuteStartRecoding = true;
-          StartPreview.RaiseCanExecuteChanged();
-          StartRecoding.RaiseCanExecuteChanged();
+          SetCanExecuteStartRecording(true);
+          SetCanExecuteStartPreview(true);
 
-          _canExecutePreviewing = true;
-          ClickPreviewing.RaiseCanExecuteChanged();
-          _canExecuteRecord = true;
-          ClickRecording.RaiseCanExecuteChanged();
+          SetCanExecuteClickPreview(true);
+          SetCanExecuteClickRecord(true);
         }
       }
       catch (Exception)
       {
         ControllerStatus = CameraControllerStatus.FailedToInitialize;
-        _canExecuteStartPreviewing = false;
-        _canExecuteStartRecoding = false;
-        StartPreview.RaiseCanExecuteChanged();
-        StartRecoding.RaiseCanExecuteChanged();
 
-        _canExecutePreviewing = false;
-        ClickPreviewing.RaiseCanExecuteChanged();
-        _canExecuteRecord = false;
-        ClickRecording.RaiseCanExecuteChanged();
+
+        SetCanExecuteStartRecording(false);
+        SetCanExecuteStartPreview(false);
+
+        SetCanExecuteClickPreview(false);
+        SetCanExecuteClickRecord(false);
         throw;
       }
     }
@@ -166,13 +172,31 @@ namespace MediaCaptureUniversal.CameraLogic
     #region Methods
     private void ExecuteStartRecoding()
     {
+
+      if (ControllerStatus == CameraControllerStatus.Ready)
+      {
+        if (IsRecording == false)
+        {
+          IsRecording = true;
+          SetCanExecuteStartRecording(false);
+          SetCanExecuteStopRecording(true);
+
+        }
+      }
+
+
     }
 
     private async void ExecuteStopRecoding()
     {
-      if (ControllerStatus == CameraControllerStatus.Recording)
+      if (IsRecording)
       {
         await CaptureSource.StopRecordAsync();
+        IsRecording = false;
+        SetCanExecuteStopRecording(false);
+        SetCanExecuteStartRecording(true);
+
+
       }
     }
 
@@ -180,12 +204,12 @@ namespace MediaCaptureUniversal.CameraLogic
     {
       if (_isRecording == false)
       {
-        _isRecording = true;
+        IsRecording = true;
         ExecuteStartRecoding();
       }
       else
       {
-        _isRecording = false;
+        IsRecording = false;
         ExecuteStopRecoding();
       }
     }
@@ -194,20 +218,16 @@ namespace MediaCaptureUniversal.CameraLogic
       try
       {
 
-        _canExecuteStartPreviewing = false;
-        StartPreview.RaiseCanExecuteChanged();
+        SetCanExecuteStartPreview(false);
         await CaptureSource.StartPreviewAsync();
-        _canExecuteStopPreviewing = true;
-        StopPreview.RaiseCanExecuteChanged();
-
+        SetCanExecuteStopPreview(true);
+        IsPreviewing = true;
 
       }
       catch (Exception e)
       {
-        _canExecuteStartPreviewing = false;
-        _canExecuteStopPreviewing = false;
-        StartPreview.RaiseCanExecuteChanged();
-        StopPreview.RaiseCanExecuteChanged();
+        SetCanExecuteStartPreview(false);
+        SetCanExecuteStopPreview(false);
         throw;
       }
 
@@ -217,20 +237,16 @@ namespace MediaCaptureUniversal.CameraLogic
     {
       try
       {
-        _canExecuteStopPreviewing = false;
-        StopPreview.RaiseCanExecuteChanged();
+        SetCanExecuteStopPreview(false);
         await CaptureSource.StopPreviewAsync();
-        _canExecuteStartPreviewing = true;
-        StartPreview.RaiseCanExecuteChanged();
-
+        SetCanExecuteStartPreview(true);
+        IsPreviewing = false;
 
       }
       catch (Exception)
       {
-        _canExecuteStartPreviewing = false;
-        _canExecuteStopPreviewing = false;
-        StartPreview.RaiseCanExecuteChanged();
-        StopPreview.RaiseCanExecuteChanged();
+        SetCanExecuteStartPreview(false);
+        SetCanExecuteStopPreview(false);
         throw;
       }
 
@@ -238,18 +254,55 @@ namespace MediaCaptureUniversal.CameraLogic
 
     public void ExecuteClickPreviewing()
     {
-      if (_isPreviewing == false)
+      if (IsPreviewing == false)
       {
-        _isPreviewing = true;
+        IsPreviewing = true;
         ExecuteStartPreviewing();
       }
       else
       {
-        _isPreviewing = false;
+        IsPreviewing = false;
         ExecuteStopPreviewing();
       }
     }
 
+
+    #region helpers
+    private void SetCanExecuteStartPreview(bool flag)
+    {
+      _canExecuteStartPreviewing = flag;
+      StartPreview.RaiseCanExecuteChanged();
+    }
+
+    private void SetCanExecuteStopPreview(bool flag)
+    {
+      _canExecuteStopPreviewing = flag;
+      StopPreview.RaiseCanExecuteChanged();
+    }
+
+    private void SetCanExecuteStartRecording(bool flag)
+    {
+      _canExecuteStartRecoding = flag;
+      StartRecording.RaiseCanExecuteChanged();
+    }
+
+    private void SetCanExecuteStopRecording(bool flag)
+    {
+      _canExecuteStopRecoding = flag;
+      StopRecording.RaiseCanExecuteChanged();
+    }
+
+    private void SetCanExecuteClickPreview(bool flag)
+    {
+      _canExecutePreview = flag;
+      ClickPreview.RaiseCanExecuteChanged();
+    }
+    private void SetCanExecuteClickRecord(bool flag)
+    {
+      _canExecuteRecord = flag;
+      ClickRecord.RaiseCanExecuteChanged();
+    }
+    #endregion
 
     #endregion
 
