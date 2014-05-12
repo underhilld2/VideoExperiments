@@ -1,0 +1,44 @@
+﻿<Page
+    x:Class="MediaCaptureUniversal.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MediaCaptureUniversal"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Loaded="OnLoad"
+  
+    DataContext="{Binding CameraController, Source={StaticResource Locator}}"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height=".5*"/>
+      <RowDefinition Height=".5*"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width=".5*"/>
+      <ColumnDefinition Width=".5*"/>
+    </Grid.ColumnDefinitions>
+
+    <StackPanel Orientation="Vertical" Margin="0,10,0,0" Grid.Row="0" Grid.Column="0">
+      <Button x:Name="btnStartDevice1" Click="btnStartDevice_Click" IsEnabled="true"  Margin="0,0,10,0">StartDevice</Button>
+      <Button x:Name="btnStartPreview1" Click="btnStartPreview_Click" IsEnabled="true"  Margin="0,0,10,0">StartPreview</Button>
+      <!--<Button x:Name="btnStartStopRecord1" Click="btnStartStopRecord_Click" IsEnabled="false"  Margin="0,0,10,0">StartRecord</Button>
+      <Button x:Name="btnTakePhoto1" Click="btnTakePhoto_Click" IsEnabled="false"  Margin="0,0,10,0">TakePhoto</Button>-->
+      
+    </StackPanel>
+    <CaptureElement Grid.Row="0" Grid.Column="1" x:Name="previewElement1"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
+    <StackPanel Orientation="Vertical" Margin="0,10,0,0" Grid.Row="1" Grid.Column="0">
+      <Button x:Name="BtnStartDevice1AButton" Click="btnStartDevice2_Click" IsEnabled="true"  Margin="0,0,10,0">StartDevice</Button>
+      <Button x:Name="BtnStartPreview1AButton" Click="btnStartPreview2_Click" IsEnabled="true"  Margin="0,0,10,0">StartPreview</Button>
+      <!--<Button x:Name="btnStartStopRecord1" Click="btnStartStopRecord_Click" IsEnabled="false"  Margin="0,0,10,0">StartRecord</Button>
+      <Button x:Name="btnTakePhoto1" Click="btnTakePhoto_Click" IsEnabled="false"  Margin="0,0,10,0">TakePhoto</Button>-->
+      <Button Content="Start Preview" Command="{Binding StartPreview}"  />
+      <Button Content="Stop Preview" Command="{Binding StopPreview}" />
+      <CheckBox Content="Preview" Command="{Binding ClickPreviewing}" />
+    </StackPanel>
+    <CaptureElement Grid.Row="1" x:Name="PreviewElement1ACaptureElement"  Grid.Column="1"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+  </Grid>
+</Page>
