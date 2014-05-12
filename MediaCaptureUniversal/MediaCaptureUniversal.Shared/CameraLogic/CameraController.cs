@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Windows.Media.Capture;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -99,8 +100,9 @@ namespace MediaCaptureUniversal.CameraLogic
 
     #endregion
 
-    internal async void Initialze()
+    internal async Task<int> Initialze()
     {
+      int returnVar = 0;
       try
       {
 
@@ -117,6 +119,9 @@ namespace MediaCaptureUniversal.CameraLogic
 
             SetCanExecuteClickPreview(true);
             SetCanExecuteClickRecord(true);
+            IsRecording = false;
+            IsPreviewing = false;
+            returnVar = 1;
           }
           else
           {
@@ -136,6 +141,10 @@ namespace MediaCaptureUniversal.CameraLogic
 
           SetCanExecuteClickPreview(true);
           SetCanExecuteClickRecord(true);
+
+          IsRecording = false;
+          IsPreviewing = false;
+          returnVar = 1;
         }
       }
       catch (Exception)
@@ -150,6 +159,7 @@ namespace MediaCaptureUniversal.CameraLogic
         SetCanExecuteClickRecord(false);
         throw;
       }
+      return returnVar;
     }
 
     public async void Failed(MediaCapture currentCaptureObject, MediaCaptureFailedEventArgs currentFailure)
@@ -189,9 +199,9 @@ namespace MediaCaptureUniversal.CameraLogic
 
     private async void ExecuteStopRecoding()
     {
-      if (IsRecording)
+      if (IsRecording == true)
       {
-        await CaptureSource.StopRecordAsync();
+        //await CaptureSource.StopRecordAsync();
         IsRecording = false;
         SetCanExecuteStopRecording(false);
         SetCanExecuteStartRecording(true);
@@ -202,14 +212,12 @@ namespace MediaCaptureUniversal.CameraLogic
 
     public void ExecuteClickRecord()
     {
-      if (_isRecording == false)
+      if (IsRecording == false)
       {
-        IsRecording = true;
         ExecuteStartRecoding();
       }
       else
       {
-        IsRecording = false;
         ExecuteStopRecoding();
       }
     }
@@ -256,12 +264,10 @@ namespace MediaCaptureUniversal.CameraLogic
     {
       if (IsPreviewing == false)
       {
-        IsPreviewing = true;
         ExecuteStartPreviewing();
       }
       else
       {
-        IsPreviewing = false;
         ExecuteStopPreviewing();
       }
     }

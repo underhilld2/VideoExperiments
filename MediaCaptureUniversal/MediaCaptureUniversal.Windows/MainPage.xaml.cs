@@ -40,8 +40,14 @@ namespace MediaCaptureUniversal
       NavigationCacheMode = NavigationCacheMode.Required;
       m_mediaPropertyChanged += SystemMediaControls_PropertyChanged;
 
+      //Init();
+    }
+
+
+    private async void Init()
+    {
       var temp = this.DataContext as CameraController;
-      temp.Initialze();
+      await temp.Initialze();
       PreviewElement1ACaptureElement.Source = temp.CaptureSource;
     }
 
@@ -257,6 +263,11 @@ namespace MediaCaptureUniversal
       temp.ExecuteStartPreviewing();
     }
 
-
+    private async void OnLoad(object sender, RoutedEventArgs e)
+    {
+      var temp = this.DataContext as CameraController;
+      await temp.Initialze();
+      PreviewElement1ACaptureElement.Source = temp.CaptureSource;
+    }
   }
 }

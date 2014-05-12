@@ -261,10 +261,10 @@ namespace MediaCaptureUniversal
       temp.ExecuteStartPreviewing();
     }
 
-    private void OnLoad(object sender, RoutedEventArgs e)
+    private async void OnLoad(object sender, RoutedEventArgs e)
     {
       var temp = this.DataContext as CameraController;
-      temp.Initialze();
+      await temp.Initialze();
       PreviewElement1ACaptureElement.Source = temp.CaptureSource;
     }
 

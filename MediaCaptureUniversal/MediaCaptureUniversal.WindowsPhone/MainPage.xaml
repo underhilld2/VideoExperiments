@@ -13,8 +13,8 @@
 
     <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition Height=".5*"/>
-      <RowDefinition Height=".5*"/>
+      <RowDefinition Height=".3*"/>
+      <RowDefinition Height=".7*"/>
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width=".5*"/>
@@ -31,13 +31,14 @@
     <CaptureElement Grid.Row="0" Grid.Column="1" x:Name="previewElement1"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
     <StackPanel Orientation="Vertical" Margin="0,10,0,0" Grid.Row="1" Grid.Column="0">
-      <Button x:Name="BtnStartDevice1AButton" Click="btnStartDevice2_Click" IsEnabled="true"  Margin="0,0,10,0">StartDevice</Button>
-      <Button x:Name="BtnStartPreview1AButton" Click="btnStartPreview2_Click" IsEnabled="true"  Margin="0,0,10,0">StartPreview</Button>
+      <Button x:Name="BtnStartDevice1AButton" Command="{Binding StartRecording}"   Margin="0,0,10,0">Start Recording</Button>
+      <Button x:Name="BtnStartPreview1AButton" Command="{Binding StopRecording}"   Margin="0,0,10,0">Stop Recording</Button>
       <!--<Button x:Name="btnStartStopRecord1" Click="btnStartStopRecord_Click" IsEnabled="false"  Margin="0,0,10,0">StartRecord</Button>
       <Button x:Name="btnTakePhoto1" Click="btnTakePhoto_Click" IsEnabled="false"  Margin="0,0,10,0">TakePhoto</Button>-->
       <Button Content="Start Preview" Command="{Binding StartPreview}"  />
       <Button Content="Stop Preview" Command="{Binding StopPreview}" />
       <CheckBox Content="Preview"  IsChecked="{Binding IsPreviewing}"   Command="{Binding ClickPreview}" />
+      <CheckBox Content="Record"  IsChecked="{Binding IsRecording}"   Command="{Binding ClickRecord}" />
     </StackPanel>
     <CaptureElement Grid.Row="1" x:Name="PreviewElement1ACaptureElement"  Grid.Column="1"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
   </Grid>
